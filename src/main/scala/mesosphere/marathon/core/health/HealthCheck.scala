@@ -4,6 +4,7 @@ package core.health
 import com.wix.accord._
 import mesosphere.marathon.Protos.HealthCheckDefinition.Protocol
 import mesosphere.marathon.core.instance.Instance
+import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.state._
 import org.apache.mesos.{ Protos => MesosProtos }
 
@@ -77,12 +78,19 @@ sealed trait MarathonHealthCheck extends HealthCheckWithPort { this: HealthCheck
   def portIndex: Option[PortReference]
   def port: Option[Int]
 
-  @SuppressWarnings(Array("OptionGet"))
   def effectivePort(app: AppDefinition, instance: Instance): Int = {
-    // TODO(cleanup): HealthChecks are only supported for App instances
-    val task = instance.tasksMap.values.head
-    def portViaIndex: Option[Int] = portIndex.map(_(task.status.networkInfo.portAssignments(app)).effectivePort)
-    port.orElse(portViaIndex).get
+    def portViaIndex(task: Task): Option[Int] = portIndex.map(_(task.status.networkInfo.portAssignments(app)).effectivePort)
+
+    port.orElse {
+      // MarathonHealthChecks are only supported for App instances so there will be exactly one task
+      require(
+        instance.tasksMap.size == 1,
+        s"Unable to compute effective port for ${instance.instanceId} with ${instance.tasksMap.size} containers")
+      val (_, task) = instance.tasksMap.head
+      portViaIndex(task)
+    }.getOrElse {
+      throw new IllegalStateException(s"Unable to compute effective port for instance ${instance.instanceId}")
+    }
   }
 }
 
