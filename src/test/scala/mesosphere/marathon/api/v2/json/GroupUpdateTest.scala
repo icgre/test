@@ -26,7 +26,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
       Some(Set.empty[App]),
       Some(Set(
         GroupUpdate(
-          Some("test"), Some(Set.empty[App]), Some(Set(GroupUpdateHelper.empty("foo".toPath)))),
+          Some("test"), Some(Set.empty[App]), Some(Set(Group.emptyUpdate("foo".toPath)))),
         GroupUpdate(
           Some("apps"), Some(Set(
             App("app1", cmd = Some("foo"),
@@ -68,7 +68,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
         GroupUpdate(
           Some("test"),
           None,
-          Some(Set(GroupUpdateHelper.empty("foo".toPath)))
+          Some(Set(Group.emptyUpdate("foo".toPath)))
         ),
         GroupUpdate(
           Some("apps"),
