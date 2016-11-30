@@ -4,7 +4,7 @@ package integration
 import mesosphere.AkkaIntegrationFunTest
 import mesosphere.marathon.integration.facades.ITEnrichedTask
 import mesosphere.marathon.integration.setup._
-import mesosphere.marathon.state.UnreachableStrategy
+import mesosphere.marathon.state.InstanceHandling
 
 import scala.concurrent.duration._
 
@@ -43,8 +43,8 @@ class TaskUnreachableIntegrationTest extends AkkaIntegrationFunTest with Embedde
 
   test("A task unreachable update will trigger a replacement task") {
     Given("a new app with proper timeouts")
-    val strategy = UnreachableStrategy(10.seconds, 5.minutes)
-    val app = appProxy(testBasePath / "app", "v1", instances = 1).copy(unreachableStrategy = strategy)
+    val strategy = InstanceHandling(10.seconds, 5.minutes)
+    val app = appProxy(testBasePath / "app", "v1", instances = 1).copy(instanceHandling = strategy)
     waitForDeployment(marathon.createAppV2(app))
     val task = waitForTasks(app.id, 1).head
 

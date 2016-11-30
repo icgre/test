@@ -1,37 +1,37 @@
 package mesosphere.marathon.state
 
 import mesosphere.UnitTest
-import mesosphere.marathon.state.UnreachableStrategy.KillSelection.{ OldestFirst, YoungestFirst }
+import mesosphere.marathon.state.InstanceHandling.KillSelection.{ OldestFirst, YoungestFirst }
 
-class UnreachableStrategyTest extends UnitTest {
+class InstanceHandlingTest extends UnitTest {
 
-  "UnreachableStrategy.KillSelection" should {
+  "InstanceHandling.KillSelection" should {
 
     "parse all value 'YoungestFirst'" in {
-      UnreachableStrategy.KillSelection.withName("YoungestFirst") should be(YoungestFirst)
+      InstanceHandling.KillSelection.withName("YoungestFirst") should be(YoungestFirst)
     }
 
     "parse all value 'OldestFirst'" in {
-      UnreachableStrategy.KillSelection.withName("OldestFirst") should be(OldestFirst)
+      InstanceHandling.KillSelection.withName("OldestFirst") should be(OldestFirst)
     }
   }
 
   it should {
     "throw an exception for an invalid value" in {
       the[NoSuchElementException] thrownBy {
-        UnreachableStrategy.KillSelection.withName("youngestFirst")
+        InstanceHandling.KillSelection.withName("youngestFirst")
       } should have message ("There is no KillSelection with name 'youngestFirst'")
     }
   }
 
-  "UnreachableStrategy.YoungestFirst" should {
+  "InstanceHandling.YoungestFirst" should {
     "select the younger timestamp" in {
       YoungestFirst(Timestamp.zero, Timestamp(1)) should be(false)
       YoungestFirst(Timestamp(1), Timestamp.zero) should be(true)
     }
   }
 
-  "UnreachableStrategy.OldestFirst" should {
+  "InstanceHandling.OldestFirst" should {
     "select the older timestamp" in {
       OldestFirst(Timestamp.zero, Timestamp(1)) should be(true)
       OldestFirst(Timestamp(1), Timestamp.zero) should be(false)

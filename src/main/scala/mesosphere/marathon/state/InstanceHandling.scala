@@ -1,18 +1,18 @@
 package mesosphere.marathon.state
 
-import mesosphere.marathon.state.UnreachableStrategy.KillSelection
+import mesosphere.marathon.state.InstanceHandling.KillSelection
 
 import scala.concurrent.duration._
 
 /**
   * Defines the time outs and kill strategy for unreachable tasks.
   */
-case class UnreachableStrategy(
-  timeUntilInactive: FiniteDuration = UnreachableStrategy.DefaultTimeUntilInactive,
-  timeUntilExpunge: FiniteDuration = UnreachableStrategy.DefaultTimeUntilExpunge,
-  killSelection: KillSelection = UnreachableStrategy.DefaultKillSelection)
+case class InstanceHandling(
+  unreachableInactiveAfter: FiniteDuration = InstanceHandling.DefaultTimeUntilInactive,
+  unreachableExpungeAfter: FiniteDuration = InstanceHandling.DefaultTimeUntilExpunge,
+  killSelection: KillSelection = InstanceHandling.DefaultKillSelection)
 
-object UnreachableStrategy {
+object InstanceHandling {
   val DefaultTimeUntilInactive = 3.minutes
   val DefaultTimeUntilExpunge = 6.minutes
   val DefaultKillSelection = KillSelection.YoungestFirst
